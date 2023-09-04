@@ -1,0 +1,28 @@
+#trumthe.vn | thesieure.com | doithengay.com | naptudong.com
+driver: "thesieure.com"
+
+partner_key: "" #Do web cung cấp
+
+partner_id: "" #Do web cung cấp
+
+ratio: 1000 #1.000VND = 1 xu
+
+bonus: 1.5 # Khuyen mai 50%
+
+timeout_pending: 10 # Thời gian chờ nạp (giây)
+
+currency: "lcoin"
+
+#TPBank Support
+tpbank:
+  enable: true
+  account_number: ""
+  account: ""
+  password: ""
+  #Check history interval task (seconds)
+  interval: 60
+  #Check the transaction description format.
+  format: "NAP-LOCM {player}"
+
+commands:
+  - givemoney {player} {money}

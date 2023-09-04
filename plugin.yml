@@ -1,0 +1,9 @@
+name: NapThe
+author: phuongaz
+main: phuongaz\napthe\Loader
+api: 5.0.0
+version: 1.3
+permissions:
+    napthe.command:
+        description: napthe command
+        default: true
