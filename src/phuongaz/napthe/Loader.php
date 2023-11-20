@@ -31,6 +31,7 @@ use JsonException;
 use phuongaz\napthe\card\Card;
 use phuongaz\napthe\command\NapTheCommand;
 use phuongaz\napthe\event\PlayerDonateEvent;
+use phuongaz\napthe\provider\SQLiteProvider;
 use phuongaz\napthe\response\Result;
 use phuongaz\napthe\util\Settings;
 use phuongaz\NapThe\util\Util;
@@ -40,6 +41,9 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
+use poggit\libasynql\DataConnector;
+use poggit\libasynql\libasynql;
+use SOFe\AwaitGenerator\Await;
 
 class Loader extends PluginBase{
     use SingletonTrait;
@@ -48,6 +52,8 @@ class Loader extends PluginBase{
     private Settings $setting;
     private array|false $language;
     private string $logger_path;
+
+    private SQLiteProvider $sqliteProvider;
 
     public function onLoad():void{
         self::setInstance($this);
@@ -65,6 +71,21 @@ class Loader extends PluginBase{
         Server::getInstance()->getCommandMap()->register("napthe", new NapTheCommand());
         Server::getInstance()->getPluginManager()->registerEvents(new EventListener(),$this);
         $this->setting->startTPBank();
+
+        $connector = libasynql::create($this, $this->getConfig()->get("database"), [
+            "sqlite" => "sqlite.sql",
+            "mysql" => "mysql.sql"
+        ]);
+
+        $this->sqliteProvider = new SQLiteProvider($connector);
+    }
+
+    public function onDisable():void{
+        $this->sqliteProvider->close();
+    }
+
+    public function getProvider() :SQLiteProvider{
+        return $this->sqliteProvider;
     }
 
     public function getSetting() :Settings{
@@ -92,6 +113,7 @@ class Loader extends PluginBase{
         $this->executeRewardsCommands($player, $coin);
 
         Util::logCard($player, $amount, $telco);
+        Await::g2c($this->sqliteProvider->awaitInsert($playerName, $amount, $telco));
     }
 
     public function successBank(Player $player, string $amount): void {
@@ -104,6 +126,7 @@ class Loader extends PluginBase{
 
         $this->broadcastMessage(Util::getMessage('broadcast.success.card', $player->getName(), $coin, $amount));
         $this->executeRewardsCommands($player, $coin);
+        Await::g2c($this->sqliteProvider->awaitInsert($player->getName(), (int)$amount, 'bank'));
     }
 
     private function broadcastMessage(string $message): void {

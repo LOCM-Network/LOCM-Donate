@@ -39,7 +39,6 @@ Class Result{
         $this->card = $card;
         $this->result = $result;
     }
-
     public function checkError() :bool{
         return is_null($this->result);
     }
@@ -51,19 +50,15 @@ Class Result{
     public function getResult() :array{
         return $this->result;
     }
-
     public function getRequestId() :string{
         return $this->getResult()['request_id'];
     }
-
     public function getStatus() :int{
         return $this->getResult()['status'];
     }
-
     public function getMessage():string{
         return $this->getResult()['message'];
     }
-
     public function isPending() :bool{
         return ($this->getStatus() == Status::PENDING);
     }

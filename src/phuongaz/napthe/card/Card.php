@@ -40,7 +40,6 @@ Class Card{
     public function getChargeUrl(): string {
         return 'https://'.Loader::getInstance()->getSetting()->getDriver().'/chargingws/v2?';
     }
-
     public function createDataPost(string $command) :array {
         $dataPost = [];
         $dataPost['request_id'] = $this->data['request_id'];
@@ -61,7 +60,6 @@ Class Card{
     public function getAmount() :int{
         return $this->data['amount'];
     }
-
     public function getSign(): string{
         $data = [];
         $data[] = $this->data['partner_key'];
