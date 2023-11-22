@@ -1,20 +1,20 @@
 --# !sqlite
---# cards {
---#  init {
+--# { cards
+--#  { init
 CREATE TABLE IF NOT EXISTS cards (player TEXT, amount INTEGER, telco TEXT, time TEXT)
 --#  }
---#  insert {
+--#  { insert 
 --#     :player string
 --#     :amount number
 --#     :telco string
 --#     :time string
 INSERT INTO cards (player, amount, telco, time) VALUES (:player, :amount, :telco, :pin, :serial, :time)
 --#   }
---#  select {
+--#  { select
 --#     :player string
 SELECT * FROM cards WHERE player = :player
 --#   }
---#   select_top {
+--#   { select_top 
 SELECT player, SUM(amount) AS total_amount
 FROM cards
 GROUP BY player
